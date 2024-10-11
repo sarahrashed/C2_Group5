@@ -1,0 +1,60 @@
+---
+title: "Report 3 Data Exploration"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+library(ggplot2)
+library(tidyr)
+fb <- read.csv("Facebook_Project/dataset_Facebook.csv",
+               sep = ";",
+               header = TRUE,
+               as.is = TRUE)
+
+fb <- fb %>% drop_na()
+summary(fb)
+```
+
+```{r}
+# Load necessary library
+library(dplyr)
+
+# Add a new column with the average `Page.total.likes` per month
+fb <- fb %>%
+  group_by(Post.Month) %>%  # Group by Post.Month
+  mutate(Average.Page.Likes.Per.Month = mean(like, na.rm = TRUE)) %>%  # Calculate average likes per month and add as a new column
+  ungroup()  # Remove grouping
+# fb <- fb %>%
+#   mutate(
+#     Category = as.factor(Category),
+#     Post.Month = as.factor(Post.Month),
+#     Post.Weekday = as.factor(Post.Weekday),
+#     Post.Hour = as.factor(Post.Hour),
+#     Paid = as.factor(Paid)
+#   )
+# Print the first few rows to verify
+head(fb)
+```
+
+```{r}
+# Load necessary library
+library(GGally)
+
+# Create the scatterplot matrix
+Scatter_Matrix <- ggpairs(
+  fb, 
+  columns = c(2:7,16:19),  # Select the columns to include in the scatterplot matrix
+  title = "Scatter Plot Matrix for fb Dataset",  # Set the title for the matrix
+  axisLabels = "show"  # Show axis labels for better readability
+)
+
+# Save the scatterplot matrix as a PNG file with specified dimensions
+ggsave("Scatter plot matrix.png", plot = Scatter_Matrix, width = 15, height = 15, units = "in") 
+
+# Print the scatterplot matrix to the R console/plot window
+Scatter_Matrix
+```
