@@ -58,3 +58,39 @@ ggsave("Scatter plot matrix.png", plot = Scatter_Matrix, width = 15, height = 15
 # Print the scatterplot matrix to the R console/plot window
 Scatter_Matrix
 ```
+```{r}
+# Histogram for Post.Month and Like
+ggplot(fb, aes(x = Post.Month, y = like)) + 
+  geom_bar(stat = "identity", fill = "skyblue") +
+  labs(title = "Histogram of Likes by Post Month", x = "Post Month", y = "Total Likes") +
+  theme_minimal()
+
+# Histogram for Post.Month and Total.Interactions
+ggplot(fb, aes(x = Post.Month, y = Total.Interactions)) + 
+  geom_bar(stat = "identity", fill = "lightgreen") +
+  labs(title = "Histogram of Total Interactions by Post Month", x = "Post Month", y = "Total Interactions") +
+  theme_minimal()
+```
+
+```{r}
+# Load necessary library
+library(ggplot2)
+library(rlang)
+
+selected_columns <- c(1, 8:19)
+
+# Get the names of the selected columns
+numeric_cols <- names(fb)[selected_columns]
+
+# Loop through numeric columns and create QQ plots
+for (col in numeric_cols) {
+    p <- ggplot(fb, aes(sample = !!sym(col))) +  # Use sym() and !! for tidy evaluation
+        stat_qq() +
+        stat_qq_line(color = "red") +
+        labs(title = paste("QQ Plot of", col), x = "Theoretical Quantiles", y = "Sample Quantiles") +
+        theme_minimal()
+    
+    print(p)
+}
+
+```
